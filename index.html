@@ -216,5 +216,25 @@
     </div>
 </div>
 
+	
+<script>
+    // AJAX request to get visit count from the server
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const visitCount = xhr.responseText;
+            document.getElementById('visitCount').innerText = visitCount;
+        }
+    };
+    xhr.open('GET', 'counter.php', true);
+    xhr.send();
+</script>
+
+<div>
+    <p>Website Visits: <span id="visitCount">Loading...</span></p>
+</div>
+
+
+	
 </body>
 </html>
