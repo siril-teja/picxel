@@ -12,7 +12,7 @@ Welcome to the Image to Pixel Art Converter!
   <tbody>
     <tr>
       <td>1</td>
-      <td style="background-color: rgb(255, 0, 0);"></td>
+      <td style="background-color: rgb(100, 0, 0);"></td>
     </tr>
     <tr>
       <td>2</td>
