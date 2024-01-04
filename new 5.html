@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Pixel Art</title>
+	
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            width: 500px;
+            margin-top: 30px;
+            background-color: #fff;
+        }
+        #container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            background-color: #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table td {
+            width: 10px; /* Adjust the width of each pixel cell */
+            height: 10px; /* Adjust the height of each pixel cell */
+            padding: 0;
+            margin: 0;
+            border: 1px solid #fff; /* Border color to separate pixels */
+        }
+        #codeSection {
+            margin-top: 1px;
+            text-align: left;
+            white-space: pre-wrap;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #htmlTable {
+            width: 500px;
+            height: 500px;
+            margin-top: 10px;
+            resize: none;
+        }
+		@media (max-width: 768px) {
+            #container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #right-section {
+                margin-top: 20px;
+                margin-left: 0;
+            }
+        }
+		
+    </style>
+</head>
+<body>
+    <h1>Image to Pixel Art Converter</h1>
+    <label for="imageInput">Choose an image:</label>
+    <input type="file" id="imageInput" accept="image/jpeg" onchange="handleImage()">
+    
+    <label for="pixelSizeInput">Pixel Size:</label>
+    <input type="number" id="pixelSizeInput" min="1" value="10" onchange="handleImage()">
+
+    <div id="container">
+        <canvas id="pixelCanvas"></canvas>
+        
+        <table id="pixelTable"></table>
+
+        <div id="codeSection">
+            <label for="htmlTable">HTML Table:</label>
+            <textarea id="htmlTable" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        let currentPixelSize; // Variable to store the current pixel size
+
+        function handleImage() {
+            const input = document.getElementById('imageInput');
+            const pixelSizeInput = document.getElementById('pixelSizeInput');
+            const canvas = document.getElementById('pixelCanvas');
+            const table = document.getElementById('pixelTable');
+            const htmlTableTextarea = document.getElementById('htmlTable');
+            const ctx = canvas.getContext('2d');
+            
+            const img = new Image();
+            const file = input.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                img.src = e.target.result;
+            };
+
+            img.onload = function() {
+                // Calculate the default pixel size as 2% of the smallest side of the input image
+                const defaultPixelSize = Math.min(img.width, img.height) * 0.02;
+
+                // Set the default pixel size in the input element if not set by the user
+                if (!currentPixelSize) {
+                    pixelSizeInput.value = Math.round(defaultPixelSize);
+                }
+
+                // Retrieve the user-selected or default pixel size
+                const pixelSize = parseInt(pixelSizeInput.value, 10);
+                currentPixelSize = pixelSize; // Update the current pixel size
+
+                const imageWidth = img.width;
+
+                // Calculate the result height to maintain aspect ratio
+                const aspectRatio = img.width / img.height;
+                const imageHeight = Math.round(imageWidth / aspectRatio);
+
+                // Set canvas dimensions to match the input image size
+                canvas.width = imageWidth;
+                canvas.height = imageHeight;
+
+                // Draw the original image on the canvas
+                ctx.drawImage(img, 0, 0, imageWidth, imageHeight);
+
+                // Create and display HTML table representing the pixel art
+                const pixelTableHTML = createPixelTable(imageWidth, imageHeight, pixelSize);
+                table.innerHTML = pixelTableHTML;
+
+                // Display HTML code for the pixel art table
+                htmlTableTextarea.value = generateHTMLCode(pixelTableHTML);
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function createPixelTable(width, height, pixelSize) {
+            let tableHTML = '<tbody>';
+
+            for (let y = 0; y < height; y += pixelSize) {
+                tableHTML += '<tr>';
+                for (let x = 0; x < width; x += pixelSize) {
+                    const color = getAverageColor(x, y, pixelSize);
+                    const colorString = `rgb(${color.r}, ${color.g}, ${color.b})`;
+                    tableHTML += `<td style="background-color: ${colorString};"></td>`;
+                }
+                tableHTML += '</tr>';
+            }
+
+            tableHTML += '</tbody>';
+            return tableHTML;
+        }
+
+        function getAverageColor(x, y, pixelSize) {
+            const canvas = document.getElementById('pixelCanvas');
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(x, y, pixelSize, pixelSize);
+            const averageColor = getAverageColorFromData(imageData.data);
+            return averageColor;
+        }
+
+        function getAverageColorFromData(data) {
+            let r = 0, g = 0, b = 0;
+
+            for (let i = 0; i < data.length; i += 4) {
+                r += data[i];
+                g += data[i + 1];
+                b += data[i + 2];
+            }
+
+            const pixelCount = data.length / 4;
+            return {
+                r: Math.floor(r / pixelCount),
+                g: Math.floor(g / pixelCount),
+                b: Math.floor(b / pixelCount)
+            };
+        }
+
+        function generateHTMLCode(pixelTableHTML) {
+            return `<table>${pixelTableHTML}</table>`;
+        }
+    </script>
+
+
+
+<div id="container" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div id="left-section" style="flex: 4; text-align: left;">
+        <h2>Instructions:</h2>
+       <p>Welcome to the Image to Pixel Art Converter! Follow these steps to create pixel art:</p>
+    <ol>
+        <li>Choose a JPEG/PNG image using the file input above.</li>
+        <li>Adjust the pixel size using the input field. The default size is set to 2% of the smallest side.</li>
+        <li>Observe the pixel art on the canvas and the corresponding HTML table.</li>
+        <li>Modify the pixel size to achieve the desired effect.</li>
+        <li>Copy the generated HTML code for your use.</li>
+    </ol>
+    <p>Have fun creating pixel art!</p>
+    </div>
+
+    <div id="right-section" style="flex: 1; text-align: center; margin-top: 80px; margin-left: 30%;">
+        <p>Made with ❤️ by:</p>
+		<p>@siril-teja</p>
+        <p> 
+            <a href="https://github.com/siril-teja" target="_blank">
+                <img src="https://img.icons8.com/material-rounded/24/000000/github.png" alt="GitHub Icon" />
+            </a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
