@@ -2,10 +2,10 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
 - family-names: "Dukkipati"
-  given-names: "Siril"
+  given-names: "Siril Teja"
   orcid: "https://orcid.org/0000-0001-6047-4513"
 title: "Picxel"
-version: 1.0.0
+version:
 doi: 
 date-released: 2024-06-04
-url: "https:picxel.siril.me"
+url: "https://picxel.siril.me/"
