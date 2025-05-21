@@ -66,8 +66,16 @@
         }
 		
     </style>
+    <link rel="stylesheet" href="matrix-style.css">
 </head>
 <body>
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+        </label>
+        <em>Enable Matrix Mode</em>
+    </div>
     <h1>Image to Pixel Art Converter</h1>
 	<p>This website is serverless and does not have a backend. The images are processed right in your browser and are not stored anywhere. Simply refresh the page to delete them.</p>
     <label for="imageInput">Choose an image:</label>
@@ -88,6 +96,39 @@
     </div>
 
     <script>
+        // Dark Mode Toggle Logic
+        const themeToggle = document.getElementById('checkbox');
+        const body = document.body;
+
+        // Function to set theme preference
+        function setTheme(isDark) {
+            if (isDark) {
+                body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Event listener for the toggle
+        themeToggle.addEventListener('change', function() {
+            setTheme(this.checked);
+        });
+
+        // Check local storage for saved theme preference
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                themeToggle.checked = true;
+                body.classList.add('dark-mode');
+            } else {
+                // Default to light mode if no preference or preference is light
+                themeToggle.checked = false;
+                body.classList.remove('dark-mode'); 
+            }
+        });
+
         let currentPixelSize; // Variable to store the current pixel size
 
         function handleImage() {
@@ -153,7 +194,7 @@
                 for (let x = 0; x < width; x += pixelSize) {
                     const color = getAverageColor(x, y, pixelSize);
                     const colorString = `rgb(${color.r}, ${color.g}, ${color.b})`;
-                    tableHTML += `<td style="background-color: ${colorString};"></td>`;
+                    tableHTML += `<td style="background-color: ${colorString};" class="pixel-cell"></td>`;
                 }
                 tableHTML += '</tr>';
             }

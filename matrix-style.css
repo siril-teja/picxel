@@ -1,0 +1,187 @@
+/* Basic Matrix Theme Styling */
+body.dark-mode {
+    background-color: #000000; /* Black background */
+    color: #00FF00; /* Green text */
+    font-family: 'Courier New', Courier, monospace;
+    filter: saturate(1.2) hue-rotate(0deg); /* Optional: slightly more vibrant green */
+}
+
+.dark-mode h1, .dark-mode p, .dark-mode label, .dark-mode li {
+    color: #00FF00; /* Green text */
+    text-shadow: 0 0 5px #00FF00, 0 0 10px #00FF00; /* Glowing effect */
+}
+
+.dark-mode #container {
+    background-color: #0D0D0D; /* Very dark gray for container */
+    border: 1px solid #00FF00;
+    box-shadow: 0 0 10px #00FF00;
+}
+
+.dark-mode canvas {
+    border: 1px solid #008F00; /* Darker green border for canvas */
+    background-color: #050505; /* Very dark background for canvas */
+}
+
+.dark-mode table {
+    border-collapse: collapse;
+    border: 1px solid #00FF00; /* Green border for table */
+}
+
+.dark-mode table td {
+    border: 1px solid #004D00; /* Dark green border for table cells */
+    /* Animation hook will be added later */
+}
+
+.dark-mode input[type="file"], .dark-mode input[type="number"] {
+    background-color: #0A0A0A;
+    color: #00FF00;
+    border: 1px solid #00FF00;
+    padding: 5px;
+    margin: 5px;
+    box-shadow: 0 0 5px #00FF00 inset;
+}
+
+.dark-mode input[type="file"]::file-selector-button {
+    background-color: #00FF00;
+    color: #000000;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.dark-mode #codeSection {
+    background-color: #0A0A0A;
+    border: 1px solid #00FF00;
+    box-shadow: 0 0 8px #00FF00;
+}
+
+.dark-mode #htmlTable {
+    background-color: #050505;
+    color: #00FF00;
+    border: 1px solid #008F00;
+    resize: both; /* Allow resize for textarea */
+}
+
+/* Basic scanline effect for the background - subtle */
+body.dark-mode::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(0, 20, 0, 0) 50%,
+        rgba(0, 20, 0, 0.25) 50%
+    );
+    background-size: 100% 4px; /* Adjust scanline thickness and spacing */
+    z-index: -1; /* Place it behind all content */
+    pointer-events: none;
+    animation: scanlineAnim 0.1s linear infinite;
+}
+
+@keyframes scanlineAnim {
+    0% {
+        transform: translateY(0px);
+    }
+    100% {
+        transform: translateY(4px);
+    }
+}
+
+/* Style for the toggle switch (placeholder, will be refined in HTML step) */
+.dark-mode .theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    position: fixed; /* Or absolute, depending on desired placement */
+    top: 10px;
+    right: 10px;
+}
+
+.dark-mode .theme-switch {
+    display: inline-block;
+    height: 24px;
+    position: relative;
+    width: 50px;
+}
+
+.dark-mode .theme-switch input {
+    display:none;
+}
+
+.dark-mode .slider {
+    background-color: #1A1A1A;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+    border: 1px solid #00FF00;
+}
+
+.dark-mode .slider:before {
+    background-color: #00FF00;
+    bottom: 3px;
+    content: "";
+    height: 16px;
+    left: 4px;
+    position: absolute;
+    transition: .4s;
+    width: 16px;
+}
+
+.dark-mode input:checked + .slider {
+    background-color: #003300; /* Dark green when active */
+}
+
+.dark-mode input:checked + .slider:before {
+    transform: translateX(26px);
+    background-color: #00FF00; /* Bright green slider button */
+}
+
+.dark-mode .slider.round {
+    border-radius: 34px;
+}
+
+.dark-mode .slider.round:before {
+    border-radius: 50%;
+}
+
+/* Animation for pixel cells appearing in dark mode */
+@keyframes fadeInPixel {
+    from {
+        opacity: 0;
+        transform: scale(0.8); /* Optional: slight scale effect */
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+body.dark-mode .pixel-cell {
+    animation-name: fadeInPixel;
+    animation-duration: 0.5s; /* Duration of the fade-in animation */
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards; /* Keep the state of the last keyframe */
+    opacity: 0; /* Start transparent, animation will make it visible */
+}
+
+/* Staggered animation for cells - gives a nicer effect */
+/* This is a basic way to do it. More complex staggering might need JS if there are many cells. */
+body.dark-mode .pixel-cell:nth-child(odd) {
+    animation-delay: 0.1s;
+}
+
+body.dark-mode .pixel-cell:nth-child(even) {
+    animation-delay: 0.2s;
+}
+
+/* If you want a more sequential row-by-row or column-by-column animation,
+   that would typically require JavaScript to add delay classes dynamically
+   or use the Web Animations API, as CSS alone has limitations for complex sequencing based on position.
+   The above :nth-child will create a simple alternating delay. */
